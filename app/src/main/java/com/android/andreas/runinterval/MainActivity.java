@@ -14,9 +14,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
         SeekBar sliderTotaldistance = (SeekBar)findViewById(R.id.slider_totaldistance);
         sliderTotaldistance.setOnSeekBarChangeListener(this);
-
-
-
         
     }
 
