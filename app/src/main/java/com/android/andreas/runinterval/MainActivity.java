@@ -1,39 +1,31 @@
 package com.android.andreas.runinterval;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        SeekBar sliderTotaldistance = (SeekBar)findViewById(R.id.slider_totaldistance);
+        sliderTotaldistance.setOnSeekBarChangeListener(this);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void onProgressChanged(SeekBar _seekBar, int _progress, boolean _fromUser) {
+        TextView tv = (TextView)findViewById(R.id.text_totaldistance_data);
+        tv.setText(_progress + " km");
     }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) { }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) { }
 }
