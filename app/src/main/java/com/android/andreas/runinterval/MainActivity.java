@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-
 public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
 
     @Override
