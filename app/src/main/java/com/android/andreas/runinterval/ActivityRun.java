@@ -60,7 +60,7 @@ public class ActivityRun extends Activity {
                         totalDistance += lastLoc.distanceTo(_location);
                         intervalDistance += lastLoc.distanceTo(_location);
                         toIntervalDistance = intervalDistanceFull - intervalDistance;
-                    }
+                    } 
 
                     TextView tv = null;
                     tv = (TextView)findViewById(R.id.run_text_distance_data);
