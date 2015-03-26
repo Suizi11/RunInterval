@@ -98,7 +98,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onProgressChanged(SeekBar _seekBar, int _progress, boolean _fromUser) {
 
         if (_seekBar.getId() == R.id.total_distance_slider) {
-            _progress += 1; // to ensure a value bigger than 0
+            _progress += 1; // to ensure a value bigger than 0 
 
             distance = _progress * 100;
             Log.i(TAG, String.valueOf(distance) + "   " + String.valueOf(_fromUser));
