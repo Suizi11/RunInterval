@@ -1,0 +1,127 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.android.andreas.runinterval.ActivityRun">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:focusable="false"
+        android:paddingBottom="8dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/text_header_text"
+            android:id="@+id/text_run_header"
+            android:textColor="@android:color/holo_green_dark"
+            android:textStyle="bold|italic"
+            android:textSize="28dp"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gesamtzeit:"
+                android:id="@+id/run_text_totaltime_text"
+                android:layout_marginLeft="32dp"
+                android:textSize="18dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:04"
+                android:id="@+id/run_text_totaltime_data"
+                android:textSize="22dp"
+                android:layout_marginRight="32dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distanz:"
+                android:id="@+id/run_text_distance_text"
+                android:layout_marginLeft="32dp"
+                android:textSize="18dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8,2 km"
+                android:id="@+id/run_text_distance_data"
+                android:textSize="22dp"
+                android:layout_marginRight="32dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bis zum Interval:"
+                android:id="@+id/run_text_tointerval_text"
+                android:layout_marginLeft="32dp"
+                android:textSize="18dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="400 m"
+                android:id="@+id/run_text_tointerval_data"
+                android:textSize="22dp"
+                android:layout_marginRight="32dp" />
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Krafttraining starten"
+            android:id="@+id/run_button_start"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="32dp" />
+
+        <FrameLayout
+            tools:context="com.android.andreas.runinterval.ActivityTest"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:id="@+id/run_frame" >
+
+            <fragment
+                android:id="@+id/run_mapview"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
