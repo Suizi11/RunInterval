@@ -4,4 +4,7 @@
     <string name="action_settings">Settings</string>
     <string name="button_start_text">Aktivität starten</string>
     <string name="text_header_text">RunInterval</string>
+    <string name="title_activity_push_ups">PushUpsActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>
