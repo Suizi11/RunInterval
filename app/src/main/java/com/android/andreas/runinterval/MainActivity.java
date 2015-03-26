@@ -87,7 +87,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View _v) {
         switch(_v.getId()) {
             case R.id.button_start: {
-                Intent i = new Intent(this, ActivityTest.class);
+                Intent i = new Intent(this, ActivityRun.class);
                 startActivity(i);
             } break;
             default: Log.e(TAG, "unknown onClick ID encountered ...");
