@@ -11,34 +11,63 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, NumberPicker.OnValueChangeListener {
 
-    private static final String TAG = "RunInterval";
-    private NumberPicker npPushups = null;
-    private SeekBar sliderTotalDistance = null;
-    private Button b = null;
+public class MainActivity extends ActionBarActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, NumberPicker.OnValueChangeListener, RadioGroup.OnCheckedChangeListener {
+
+    private static final String TAG = "MainActivity";
+    private static final int MIN_DISTANCE_INTERVAL = 500;
+    private static final int MAX_DISTANCE_INTERVAL = 2000;
+    private static final int MIN_TIME_INTERVAL = 1;
+    private static final int MAX_TIME_INTERVAL = 20;
+
+    private int distance;
+    private TextView distanceValueLabel;
+
+    private IntervalType selectedIntervalType;
+    private TextView intervalValueLabel;
+    private int intervalProgress;
+
+    private int nrPushUps;
+    private int nrSitUps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sliderTotalDistance = (SeekBar)findViewById(R.id.main_slider_totaldistance);
-        sliderTotalDistance.setOnSeekBarChangeListener(this);
+        distance = 0;
+        distanceValueLabel = (TextView)findViewById(R.id.total_distance_value);
+        SeekBar distanceSlider = (SeekBar) findViewById(R.id.total_distance_slider);
+        onProgressChanged(distanceSlider, 0, false);
+        distanceSlider.setOnSeekBarChangeListener(this);
 
-        npPushups = (NumberPicker)findViewById(R.id.numberpicker_pushups);
-        npPushups.setMinValue(1);
-        npPushups.setMaxValue(50);
-        npPushups.setWrapSelectorWheel(false);
-        npPushups.setOnValueChangedListener(this);
+        selectedIntervalType = IntervalType.DISTANCE;
+        intervalValueLabel = (TextView)findViewById(R.id.interval_value);
+        RadioGroup rbIntervalType = (RadioGroup) findViewById(R.id.radio_interval_type);
+        rbIntervalType.setOnCheckedChangeListener(this);
+        SeekBar intervalSlider = (SeekBar) findViewById(R.id.interval_slider);
+        onProgressChanged(intervalSlider, 0, false);
+        intervalSlider.setOnSeekBarChangeListener(this);
 
-        b = (Button)findViewById(R.id.button_start);
+        NumberPicker npPushUps = (NumberPicker)findViewById(R.id.np_push_ups);
+        npPushUps.setMinValue(0);
+        npPushUps.setMaxValue(50);
+        npPushUps.setWrapSelectorWheel(false);
+        npPushUps.setOnValueChangedListener(this);
+
+        NumberPicker npSitUps = (NumberPicker)findViewById(R.id.np_sit_ups);
+        npSitUps.setMinValue(0);
+        npSitUps.setMaxValue(50);
+        npSitUps.setWrapSelectorWheel(false);
+        npSitUps.setOnValueChangedListener(this);
+
+        Button b = (Button)findViewById(R.id.button_start);
         b.setOnClickListener(this);
-
     }
 
     @Override
@@ -63,11 +92,30 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    /** Slider functions */
+
+    /** Slider callbacks */
     @Override
     public void onProgressChanged(SeekBar _seekBar, int _progress, boolean _fromUser) {
-        TextView tv = (TextView)findViewById(R.id.main_text_totaldistance_data);
-        tv.setText(_progress + " km");
+
+        if (_seekBar.getId() == R.id.total_distance_slider) {
+            _progress += 1; // to ensure a value bigger than 0
+
+            distance = _progress * 100;
+            Log.i(TAG, String.valueOf(distance) + "   " + String.valueOf(_fromUser));
+            float labelValue = distance / 1000f;
+            distanceValueLabel.setText(labelValue + " km");
+
+        } else if (_seekBar.getId() == R.id.interval_slider) {
+            intervalProgress = _progress;
+
+            if (selectedIntervalType == IntervalType.DISTANCE) {
+                int distanceInterval = Math.round((float)(MAX_DISTANCE_INTERVAL - MIN_DISTANCE_INTERVAL) * ((float)_progress / 100) + MIN_DISTANCE_INTERVAL);
+                intervalValueLabel.setText(String.valueOf(distanceInterval) + " m");
+            } else if (selectedIntervalType == IntervalType.TIME) {
+                int timeInterval = Math.round((float)(MAX_TIME_INTERVAL - MIN_TIME_INTERVAL) * ((float)_progress / 100) + MIN_TIME_INTERVAL);
+                intervalValueLabel.setText(String.valueOf(timeInterval) + " min");
+            }
+        }
     }
 
     @Override
@@ -76,20 +124,44 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) { }
 
-    /** Number-Picker functions */
+
+    /** Number-Picker callbacks */
     @Override
     public void onValueChange(NumberPicker _picker, int _oldVal, int _newVal) {
-
+        if (_picker.getId() == R.id.np_push_ups) {
+            nrPushUps = _newVal;
+        } else if (_picker.getId() == R.id.np_sit_ups) {
+            nrSitUps = _newVal;
+        }
     }
 
-    /** Button functions */
+
+    /** RadioGroup callbacks */
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        switch(checkedId) {
+            case R.id.radio_interval_distance:
+                selectedIntervalType = IntervalType.DISTANCE;
+                break;
+
+            case R.id.radio_interval_time:
+                selectedIntervalType = IntervalType.TIME;
+                break;
+
+            default:
+        }
+
+        onProgressChanged((SeekBar)findViewById(R.id.interval_slider), intervalProgress, false);
+    }
+
+
+    /** Button callbacks */
     @Override
     public void onClick(View _v) {
         switch(_v.getId()) {
-            case R.id.button_start: {
-                Intent i = new Intent(this, ActivityTest.class);
-                startActivity(i);
-            } break;
+            case R.id.button_start:
+                break;
+
             default: Log.e(TAG, "unknown onClick ID encountered ...");
         }
     }

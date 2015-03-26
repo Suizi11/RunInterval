@@ -8,123 +8,168 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:focusable="false"
-        android:paddingBottom="8dp">
+        android:layout_height="fill_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/text_header_text"
-            android:id="@+id/main_text_header"
-            android:textColor="@android:color/holo_green_dark"
-            android:textStyle="bold|italic"
-            android:textSize="28dp" />
-    </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="64dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Gesamtstrecke: "
+                android:id="@+id/total_distance_description"
+                android:layout_weight="1" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Gesamtstrecke: "
-            android:id="@+id/main_text_totaldistance_text"
-            android:layout_marginLeft="32dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="1 km"
+                android:id="@+id/total_distance_value"
+                android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="1 km"
-            android:id="@+id/main_text_totaldistance_data"
-            android:layout_marginLeft="24dp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="96dp">
+        </LinearLayout>
 
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/main_slider_totaldistance"
+            android:id="@+id/total_distance_slider"
             android:layout_gravity="center_horizontal"
-            android:max="20"
+            android:max="199"
             android:progress="1"
-            android:indeterminate="false" />
+            android:indeterminate="false"
+            android:layout_marginTop="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Intervall"
-            android:id="@+id/text_interval_text"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="32dp" />
-
-        <RadioGroup
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/radiogroup_intervaltype"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="30dp">
 
-            <RadioButton
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="nach Strecke"
-                android:id="@+id/radio_intervaltype_distance"
-                android:layout_marginLeft="48dp"
-                android:checked="false" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Intervall:"
+                android:id="@+id/text_interval_text"
+                android:layout_weight="1" />
 
-            <RadioButton
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="nach Zeit"
-                android:id="@+id/radio_intervaltype_time"
-                android:layout_marginLeft="48dp"
-                android:checked="false" />
-        </RadioGroup>
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="1 km"
+                android:id="@+id/interval_value"
+                android:textStyle="bold" />
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Liegestütze"
-            android:id="@+id/text_pushup_text"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="32dp"
-            android:nestedScrollingEnabled="true" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-        <NumberPicker
-            android:layout_width="wrap_content"
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radio_interval_type">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="nach Strecke"
+                    android:id="@+id/radio_interval_distance"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="nach Zeit"
+                    android:id="@+id/radio_interval_time"
+                    android:checked="false" />
+            </RadioGroup>
+
+            <SeekBar
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/interval_slider"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:progress="1"
+                android:indeterminate="false"
+                android:max="100" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/numberpicker_pushups"
             android:layout_gravity="center_horizontal"
-            android:measureWithLargestChild="true"
-            android:nestedScrollingEnabled="true" />
+            android:layout_marginTop="30dp">
 
-    </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Liegestütze"
+                    android:id="@+id/text_pushup_text"
+                    android:nestedScrollingEnabled="true"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:layout_gravity="center_horizontal" />
+
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/np_push_ups"
+                    android:layout_gravity="center_horizontal"
+                    android:measureWithLargestChild="false"
+                    android:nestedScrollingEnabled="true" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Sit-Ups"
+                    android:id="@+id/text_situp_text"
+                    android:nestedScrollingEnabled="true"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:layout_gravity="center_horizontal" />
+
+                <NumberPicker
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/np_sit_ups"
+                    android:layout_gravity="center_horizontal"
+                    android:measureWithLargestChild="true"
+                    android:nestedScrollingEnabled="true">
+
+                </NumberPicker>
+
+            </LinearLayout>
+        </LinearLayout>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_button_start_text"
             android:id="@+id/button_start"
