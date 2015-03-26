@@ -26,14 +26,16 @@
         </activity>
         <activity
             android:name=".ActivityRun"
-            android:label="@string/title_activity_activity_run" >
+            android:label="@string/title_activity_activity_run"
+            android:screenOrientation="portrait" >
         </activity>
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBcrDpoeG4nCLnaKek_9PEof6k2FX3lrEk" />
         <activity
             android:name=".PushUpsActivity"
-            android:label="@string/title_activity_push_ups" >
+            android:label="@string/title_activity_push_ups"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".SitUpsActivity"

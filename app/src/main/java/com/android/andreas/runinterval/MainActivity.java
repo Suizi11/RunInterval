@@ -1,7 +1,5 @@
 package com.android.andreas.runinterval;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -98,7 +95,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onProgressChanged(SeekBar _seekBar, int _progress, boolean _fromUser) {
 
         if (_seekBar.getId() == R.id.total_distance_slider) {
-            _progress += 1; // to ensure a value bigger than 0 
+            _progress += 1; // to ensure a value bigger than 0
 
             distance = _progress * 100;
             Log.i(TAG, String.valueOf(distance) + "   " + String.valueOf(_fromUser));
