@@ -25,12 +25,8 @@
         </activity>
         <activity
             android:name=".ActivityRun"
-            android:label="@string/title_activity_activity_run" >
-        </activity>
-
-        <activity
-            android:name=".ActivityTest"
-            android:label="@string/title_activity_activity_test" >
+            android:label="@string/title_activity_activity_run"
+            android:screenOrientation="portrait" >
         </activity>
 
         <meta-data
