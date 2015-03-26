@@ -1,25 +1,33 @@
 package com.android.andreas.runinterval;
 
+import android.app.ActionBar;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity implements SeekBar.OnSeekBarChangeListener, NumberPicker.OnValueChangeListener {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, NumberPicker.OnValueChangeListener {
 
-    NumberPicker npPushups = null;
-    SeekBar sliderTotalDistance = null;
+    private static final String TAG = "RunInterval";
+    private NumberPicker npPushups = null;
+    private SeekBar sliderTotalDistance = null;
+    private Button b = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sliderTotalDistance = (SeekBar)findViewById(R.id.slider_totaldistance);
+        sliderTotalDistance = (SeekBar)findViewById(R.id.main_slider_totaldistance);
         sliderTotalDistance.setOnSeekBarChangeListener(this);
 
         npPushups = (NumberPicker)findViewById(R.id.numberpicker_pushups);
@@ -27,6 +35,9 @@ public class MainActivity extends ActionBarActivity implements SeekBar.OnSeekBar
         npPushups.setMaxValue(50);
         npPushups.setWrapSelectorWheel(false);
         npPushups.setOnValueChangedListener(this);
+
+        b = (Button)findViewById(R.id.button_start);
+        b.setOnClickListener(this);
 
     }
 
@@ -52,9 +63,10 @@ public class MainActivity extends ActionBarActivity implements SeekBar.OnSeekBar
         return super.onOptionsItemSelected(item);
     }
 
+    /** Slider functions */
     @Override
     public void onProgressChanged(SeekBar _seekBar, int _progress, boolean _fromUser) {
-        TextView tv = (TextView)findViewById(R.id.text_totaldistance_data);
+        TextView tv = (TextView)findViewById(R.id.main_text_totaldistance_data);
         tv.setText(_progress + " km");
     }
 
@@ -64,8 +76,21 @@ public class MainActivity extends ActionBarActivity implements SeekBar.OnSeekBar
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) { }
 
+    /** Number-Picker functions */
     @Override
     public void onValueChange(NumberPicker _picker, int _oldVal, int _newVal) {
 
+    }
+
+    /** Button functions */
+    @Override
+    public void onClick(View _v) {
+        switch(_v.getId()) {
+            case R.id.button_start: {
+                Intent i = new Intent(this, ActivityTest.class);
+                startActivity(i);
+            } break;
+            default: Log.e(TAG, "unknown onClick ID encountered ...");
+        }
     }
 }
