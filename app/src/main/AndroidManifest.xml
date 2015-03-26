@@ -20,6 +20,11 @@
             android:name=".PushUpsActivity"
             android:label="@string/title_activity_push_ups" >
         </activity>
+        <activity
+            android:name=".SitUpsActivity"
+            android:label="@string/title_activity_sit_ups"
+            android:screenOrientation="landscape" >
+        </activity>
     </application>
 
 </manifest>

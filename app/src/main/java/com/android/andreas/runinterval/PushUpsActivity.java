@@ -92,20 +92,22 @@ public class PushUpsActivity extends ActionBarActivity implements SensorEventLis
     @Override
     public void onSensorChanged(SensorEvent _event) {
 
-        if (minBrightness == 0) {
-            minBrightness = (int)Math.floor(_event.values[0] - _event.values[0] * 0.15);
-            Log.i(TAG, "max brighntess value --> " + minBrightness);
-        }
+        if (_event.sensor.getType() == Sensor.TYPE_LIGHT) {
+            if (minBrightness == 0) {
+                minBrightness = (int)Math.floor(_event.values[0] - _event.values[0] * 0.15);
+                Log.i(TAG, "max brighntess value --> " + minBrightness);
+            }
 
-        // if sensor type is light, display was tapped (wasHighEnough = false), has minBrightness and brightness is higher than minBrightness
-        if (_event.sensor.getType() == Sensor.TYPE_LIGHT && !wasHighEnough && minBrightness != 0 && _event.values[0] > minBrightness) {
-            Log.i(TAG, "light sensor value --> " + _event.values[0]);
-            wasHighEnough = true;
-            pushUpsRemaining--;
-            tvPushUps.setText(String.valueOf(pushUpsRemaining));
-            tvStateLabel.setText("Display mit der Nase berühren");
+            // if display was tapped (wasHighEnough = false), has minBrightness and brightness is higher than minBrightness
+            if (!wasHighEnough && minBrightness != 0 && _event.values[0] > minBrightness) {
+                Log.i(TAG, "light sensor value --> " + _event.values[0]);
+                wasHighEnough = true;
+                pushUpsRemaining--;
+                tvPushUps.setText(String.valueOf(pushUpsRemaining));
+                tvStateLabel.setText("Display mit der Nase berühren");
 
-            pbPushUps.setProgress((pushUpsTotal - pushUpsRemaining));
+                pbPushUps.setProgress((pushUpsTotal - pushUpsRemaining));
+            }
         }
     }
 
