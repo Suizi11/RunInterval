@@ -38,6 +38,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SessionManager.getInstance(this.getApplicationContext());
+
         distance = 0;
         distanceValueLabel = (TextView)findViewById(R.id.total_distance_value);
         SeekBar distanceSlider = (SeekBar) findViewById(R.id.total_distance_slider);
@@ -99,7 +101,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             _progress += 1; // to ensure a value bigger than 0
 
             distance = _progress * 100;
-            Log.i(TAG, String.valueOf(distance) + "   " + String.valueOf(_fromUser));
             float labelValue = distance / 1000f;
             distanceValueLabel.setText(labelValue + " km");
 
@@ -162,6 +163,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             if (SessionManager.getInstance().setUpNewSession(distance, selectedIntervalType, intervalValue, nrPushUps, nrSitUps)) {
                 Intent i = new Intent(this, ActivityRun.class);
                 startActivity(i);
+                SessionManager.getInstance().startSession();
             } else {
                 // TODO show message, that an active session is running
             }

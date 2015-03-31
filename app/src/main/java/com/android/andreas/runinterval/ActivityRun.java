@@ -31,8 +31,6 @@ public class ActivityRun extends Activity {
     private GoogleMap googleMap;
     private LocationManager locManager;
     private Location lastLoc;
-    private long startTime = 0;
-    private SessionManager sessionManager;
     BroadcastReceiver runDataReceiver;
 
     @Override
@@ -58,7 +56,7 @@ public class ActivityRun extends Activity {
 
                     // Send Distance-Updates to Session Manager
                     if (lastLoc != null) {
-                        sessionManager.ranDistance((int)lastLoc.distanceTo(_location));
+                        SessionManager.getInstance().ranDistance((int) lastLoc.distanceTo(_location));
                     }
 
                     // print out the new distances
@@ -67,7 +65,6 @@ public class ActivityRun extends Activity {
                     //v.setText(String.format("%.2f", totalDistance) + " m");
                     tv = (TextView)findViewById(R.id.run_text_tointerval_data);
                     //tv.setText(String.format("%.2f", toIntervalDistance) + " m");
-
 
                     lastLoc = _location; // update last location
                 }
@@ -92,7 +89,7 @@ public class ActivityRun extends Activity {
         runDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context _context, Intent _intent) {
-                Toast.makeText(_context, _intent.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(_context, _intent.getStringExtra("message"), Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -100,7 +97,8 @@ public class ActivityRun extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(runDataReceiver, new IntentFilter("runData"));
+        IntentFilter filter = new IntentFilter(SessionManager.BROADCAST_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(runDataReceiver, filter);
     }
 
     @Override
@@ -158,7 +156,4 @@ public class ActivityRun extends Activity {
             Log.e(TAG, _e.toString());
         }
     }
-
-
-
 }

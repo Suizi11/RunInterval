@@ -1,11 +1,23 @@
 package com.android.andreas.runinterval;
 
 
-public class SessionManager {
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
+public class SessionManager extends BroadcastReceiver {
+
+    public static String BROADCAST_ACTION = "com.android.andreas.NORMAL_UPDATE";
 
     private static SessionManager mInstance;
 
     private boolean isSessionActive;
+    private boolean waitingForStart;
+    private boolean exerciseActive;
 
     private int totalDistance;
     private IntervalType intervalType;
@@ -14,19 +26,40 @@ public class SessionManager {
     private int nrSitUps;
 
     private int metersLeft;
+    private long timeLeft;
 
     private ExerciseType nextExercise;
 
+    // TIMER STUFF
+    private Handler timerHandler;
+
+    private long startTime;
+    private long totalTime;
+    private long runningTime;
+
+    private Context ctx;
+
     public static SessionManager getInstance() {
-        if (mInstance== null) {
-            mInstance= new SessionManager();
+        return mInstance;
+    }
+
+    public static SessionManager getInstance(Context _appContext) {
+        if (mInstance == null) {
+            mInstance = new SessionManager(_appContext);
         }
         return mInstance;
     }
 
-    private SessionManager() {
+    public SessionManager(Context _context) {
+        ctx = _context;
         isSessionActive = false;
         metersLeft = 0;
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.i("context", "received");
+        ctx = context;
     }
 
     public boolean setUpNewSession(int _totalDistance, IntervalType _intervalType, int _intervalValue, int _nrPushUps, int _nrSitUps) {
@@ -46,8 +79,21 @@ public class SessionManager {
             if (intervalType == IntervalType.DISTANCE) {
                 metersLeft = intervalValue;
             }
+
+            totalTime = 0L;
+            runningTime = 0L;
+            waitingForStart = true;
+            exerciseActive = false;
         }
-        return !isSessionActive;
+        return waitingForStart;
+    }
+
+    public void startSession() {
+        if (waitingForStart) {
+            startTime = SystemClock.uptimeMillis();
+            timerHandler = new Handler();
+            timerHandler.postDelayed(updateTimerThread, 0);
+        }
     }
 
     public void ranDistance(int _leftDistance) {
@@ -84,5 +130,37 @@ public class SessionManager {
                 nextExercise = ExerciseType.PUSH_UPS;
             }
         }
+    }
+
+
+    // TIMER STUFF
+
+    private Runnable updateTimerThread = new Runnable() {
+
+        public void run() {
+
+            totalTime = SystemClock.uptimeMillis() - startTime;
+
+            int secs = (int) (totalTime / 1000);
+            int mins = secs / 60;
+            secs = secs % 60;
+            Log.i("Time to run:", mins + ":" + String.format("%02d", secs));
+            timerHandler.postDelayed(this, 1500);
+
+            sendNormalSessionUpdates();
+        }
+    };
+
+
+    // BROADCAST STUFF
+
+    public void sendNormalSessionUpdates() {
+        Intent intent = new Intent(BROADCAST_ACTION);
+        intent.setAction(BROADCAST_ACTION);
+        // add data
+        intent.putExtra("message", "data");
+
+//        ctx.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
     }
 }
