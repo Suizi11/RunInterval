@@ -149,11 +149,7 @@ public class SessionManager extends BroadcastReceiver {
         setNextExerciseType();
         exerciseActive = false;
 
-        if (intervalType == IntervalType.DISTANCE) {
-            metersLeft = intervalValue;
-        } else if (intervalType == IntervalType.TIME) {
-            timeLeft = intervalValue;
-        }
+        setBackIntervalValues();
     }
 
     private void setNextExerciseType() {
@@ -227,7 +223,7 @@ public class SessionManager extends BroadcastReceiver {
             LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
         } else {
             finishedExercise();
-            Log.i(TAG, "no exercise is given");
+            Log.i(TAG, "no exercise was given");
         }
     }
 
