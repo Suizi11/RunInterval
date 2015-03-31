@@ -131,7 +131,6 @@ public class SessionManager extends BroadcastReceiver {
             if (intervalType == IntervalType.DISTANCE) {
                 metersLeft -= _leftDistance;
                 if (metersLeft <= 0) {
-                    exerciseActive = true;
                     sendExerciseUpdates();
                 }
             }
@@ -142,7 +141,7 @@ public class SessionManager extends BroadcastReceiver {
         if (intervalType == IntervalType.DISTANCE) {
             metersLeft = intervalValue;
         } else if (intervalType == IntervalType.TIME) {
-            timeLeft = intervalValue * 60 * 1000;
+            timeLeft = intervalValue * 60 * 100;
         }
     }
 
@@ -152,6 +151,8 @@ public class SessionManager extends BroadcastReceiver {
 
         if (intervalType == IntervalType.DISTANCE) {
             metersLeft = intervalValue;
+        } else if (intervalType == IntervalType.TIME) {
+            timeLeft = intervalValue;
         }
     }
 
@@ -177,8 +178,11 @@ public class SessionManager extends BroadcastReceiver {
             long totalTimeBefore = totalTime;
             totalTime = SystemClock.uptimeMillis() - startTime;
             long difference = totalTime - totalTimeBefore;
+
             if (!exerciseActive) {
                 runningTime += difference;
+                sendNormalUpdates();
+
                 if (intervalType == IntervalType.TIME) {
                     timeLeft -= difference;
                     if (timeLeft < 0) {
@@ -190,10 +194,8 @@ public class SessionManager extends BroadcastReceiver {
             int secs = (int) (totalTime / 1000);
             int mins = secs / 60;
             secs = secs % 60;
-            Log.i("Time to run:", mins + ":" + String.format("%02d", secs));
+            Log.i(TAG, mins + ":" + String.format("%02d", secs));
             timerHandler.postDelayed(this, 500);
-
-            sendNormalUpdates();
         }
     };
 
@@ -221,8 +223,10 @@ public class SessionManager extends BroadcastReceiver {
             } else if (nextExercise == ExerciseType.SIT_UPS) {
                 intent.putExtra(EXERCISE_VALUE_KEY, nrSitUps);
             }
+            exerciseActive = true;
             LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
         } else {
+            finishedExercise();
             Log.i(TAG, "no exercise is given");
         }
     }
