@@ -89,6 +89,7 @@ public class ActivityRun extends Activity {
         runDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context _context, Intent _intent) {
+                Log.i("action", _intent.getAction());
                 Toast.makeText(_context, _intent.getStringExtra("message"), Toast.LENGTH_SHORT).show();
             }
         };
@@ -97,7 +98,9 @@ public class ActivityRun extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        IntentFilter filter = new IntentFilter(SessionManager.BROADCAST_ACTION);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SessionManager.BROADCAST_ACTION_NORMAL);
+        filter.addAction(SessionManager.BROADCAST_ACTION_EXERCISE);
         LocalBroadcastManager.getInstance(this).registerReceiver(runDataReceiver, filter);
     }
 

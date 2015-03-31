@@ -11,7 +11,8 @@ import android.util.Log;
 
 public class SessionManager extends BroadcastReceiver {
 
-    public static String BROADCAST_ACTION = "com.android.andreas.NORMAL_UPDATE";
+    public static String BROADCAST_ACTION_NORMAL = "com.android.andreas.NORMAL_UPDATE";
+    public static String BROADCAST_ACTION_EXERCISE = "com.android.andreas.EXERCISE_UPDATE";
 
     private static SessionManager mInstance;
 
@@ -147,20 +148,24 @@ public class SessionManager extends BroadcastReceiver {
             Log.i("Time to run:", mins + ":" + String.format("%02d", secs));
             timerHandler.postDelayed(this, 1500);
 
-            sendNormalSessionUpdates();
+            sendNormalUpdates();
         }
     };
 
 
     // BROADCAST STUFF
 
-    public void sendNormalSessionUpdates() {
-        Intent intent = new Intent(BROADCAST_ACTION);
-        intent.setAction(BROADCAST_ACTION);
+    public void sendNormalUpdates() {
+        Intent intent = new Intent(BROADCAST_ACTION_NORMAL);
         // add data
         intent.putExtra("message", "data");
+        LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
+    }
 
-//        ctx.sendBroadcast(intent);
+    public void sendExerciseUpdates() {
+        Intent intent = new Intent(BROADCAST_ACTION_EXERCISE);
+        // add data
+        intent.putExtra("message", "data");
         LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
     }
 }
