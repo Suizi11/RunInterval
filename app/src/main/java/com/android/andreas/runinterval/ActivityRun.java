@@ -89,8 +89,7 @@ public class ActivityRun extends Activity {
         runDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context _context, Intent _intent) {
-                Log.i("action", _intent.getAction());
-                Toast.makeText(_context, _intent.getStringExtra("message"), Toast.LENGTH_SHORT).show();
+                Log.i("action", _intent.getAction() + " " + _intent.getStringExtra("message"));
             }
         };
     }

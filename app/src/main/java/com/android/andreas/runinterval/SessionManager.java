@@ -11,8 +11,20 @@ import android.util.Log;
 
 public class SessionManager extends BroadcastReceiver {
 
-    public static String BROADCAST_ACTION_NORMAL = "com.android.andreas.NORMAL_UPDATE";
-    public static String BROADCAST_ACTION_EXERCISE = "com.android.andreas.EXERCISE_UPDATE";
+    private static final String TAG = "SessionManager";
+
+    public static final String BROADCAST_ACTION_NORMAL = "com.android.andreas.NORMAL_UPDATE";
+    public static final String BROADCAST_ACTION_EXERCISE = "com.android.andreas.EXERCISE_UPDATE";
+    public static final String BROADCAST_ACTION_FINISH = "com.android.andreas.FINISH_UPDATE";
+
+    public static final String TOTAL_DISTANCE_KEY = "distance";
+    public static final String TOTAL_TIME_KEY = "time";
+    public static final String TOTAL_RUN_TIME_KEY = "run-time";
+    public static final String INTERVAL_VALUE_KEY = "interval-value";
+
+    public static final String EXERCISE_TYPE_KEY = "exercise-type";
+    public static final String EXERCISE_VALUE_KEY = "exercise-value";
+
 
     private static SessionManager mInstance;
 
@@ -65,6 +77,9 @@ public class SessionManager extends BroadcastReceiver {
 
     public boolean setUpNewSession(int _totalDistance, IntervalType _intervalType, int _intervalValue, int _nrPushUps, int _nrSitUps) {
         if (!isSessionActive) {
+            waitingForStart = true;
+            exerciseActive = false;
+
             totalDistance = _totalDistance;
             intervalType = _intervalType;
             intervalValue = _intervalValue;
@@ -77,44 +92,63 @@ public class SessionManager extends BroadcastReceiver {
                 nextExercise = ExerciseType.SIT_UPS;
             }
 
-            if (intervalType == IntervalType.DISTANCE) {
-                metersLeft = intervalValue;
-            }
+            setBackIntervalValues();
 
             totalTime = 0L;
             runningTime = 0L;
-            waitingForStart = true;
-            exerciseActive = false;
         }
         return waitingForStart;
     }
 
     public void startSession() {
         if (waitingForStart) {
+            waitingForStart = false;
+            isSessionActive = true;
+
             startTime = SystemClock.uptimeMillis();
             timerHandler = new Handler();
             timerHandler.postDelayed(updateTimerThread, 0);
         }
     }
 
+    public void endSession() {
+        isSessionActive = false;
+        sendFinishUpdate();
+    }
+
+    public IntervalType getIntervalType() {
+        return intervalType;
+    }
+
     public void ranDistance(int _leftDistance) {
         if (isSessionActive) {
             totalDistance -= _leftDistance;
             if (totalDistance <= 0) {
-                // TODO - finished run
+                endSession();
+                return;
             }
 
             if (intervalType == IntervalType.DISTANCE) {
                 metersLeft -= _leftDistance;
                 if (metersLeft <= 0) {
-                    // TODO - do next exercise
+                    exerciseActive = true;
+                    sendExerciseUpdates();
                 }
             }
         }
     }
 
+    public void setBackIntervalValues() {
+        if (intervalType == IntervalType.DISTANCE) {
+            metersLeft = intervalValue;
+        } else if (intervalType == IntervalType.TIME) {
+            timeLeft = intervalValue * 60 * 1000;
+        }
+    }
+
     public void finishedExercise() {
         setNextExerciseType();
+        exerciseActive = false;
 
         if (intervalType == IntervalType.DISTANCE) {
             metersLeft = intervalValue;
@@ -140,13 +174,24 @@ public class SessionManager extends BroadcastReceiver {
 
         public void run() {
 
+            long totalTimeBefore = totalTime;
             totalTime = SystemClock.uptimeMillis() - startTime;
+            long difference = totalTime - totalTimeBefore;
+            if (!exerciseActive) {
+                runningTime += difference;
+                if (intervalType == IntervalType.TIME) {
+                    timeLeft -= difference;
+                    if (timeLeft < 0) {
+                        sendExerciseUpdates();
+                    }
+                }
+            }
 
             int secs = (int) (totalTime / 1000);
             int mins = secs / 60;
             secs = secs % 60;
             Log.i("Time to run:", mins + ":" + String.format("%02d", secs));
-            timerHandler.postDelayed(this, 1500);
+            timerHandler.postDelayed(this, 500);
 
             sendNormalUpdates();
         }
@@ -157,15 +202,36 @@ public class SessionManager extends BroadcastReceiver {
 
     public void sendNormalUpdates() {
         Intent intent = new Intent(BROADCAST_ACTION_NORMAL);
-        // add data
-        intent.putExtra("message", "data");
+        intent.putExtra(TOTAL_DISTANCE_KEY, totalDistance);
+        intent.putExtra(TOTAL_TIME_KEY, totalTime);
+        if (intervalType == IntervalType.DISTANCE) {
+            intent.putExtra(INTERVAL_VALUE_KEY, metersLeft);
+        } else if (intervalType == IntervalType.TIME) {
+            intent.putExtra(INTERVAL_VALUE_KEY, timeLeft);
+        }
         LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
     }
 
     public void sendExerciseUpdates() {
-        Intent intent = new Intent(BROADCAST_ACTION_EXERCISE);
-        // add data
-        intent.putExtra("message", "data");
+        if (nextExercise != null) {
+            Intent intent = new Intent(BROADCAST_ACTION_EXERCISE);
+            intent.putExtra(EXERCISE_TYPE_KEY, nextExercise);
+            if (nextExercise == ExerciseType.PUSH_UPS) {
+                intent.putExtra(EXERCISE_VALUE_KEY, nrPushUps);
+            } else if (nextExercise == ExerciseType.SIT_UPS) {
+                intent.putExtra(EXERCISE_VALUE_KEY, nrSitUps);
+            }
+            LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
+        } else {
+            Log.i(TAG, "no exercise is given");
+        }
+    }
+
+    public void sendFinishUpdate() {
+        Intent intent = new Intent(BROADCAST_ACTION_FINISH);
+        intent.putExtra(TOTAL_DISTANCE_KEY, totalDistance);
+        intent.putExtra(TOTAL_TIME_KEY, totalTime);
+        intent.putExtra(TOTAL_RUN_TIME_KEY, runningTime);
         LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
     }
 }
