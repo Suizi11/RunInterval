@@ -26,6 +26,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private TextView distanceValueLabel;
 
     private IntervalType selectedIntervalType;
+    private int intervalValue;
     private TextView intervalValueLabel;
     private int intervalProgress;
 
@@ -107,9 +108,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
             if (selectedIntervalType == IntervalType.DISTANCE) {
                 int distanceInterval = Math.round((float)(MAX_DISTANCE_INTERVAL - MIN_DISTANCE_INTERVAL) * ((float)_progress / 100) + MIN_DISTANCE_INTERVAL);
+                intervalValue = distanceInterval;
                 intervalValueLabel.setText(String.valueOf(distanceInterval) + " m");
             } else if (selectedIntervalType == IntervalType.TIME) {
                 int timeInterval = Math.round((float)(MAX_TIME_INTERVAL - MIN_TIME_INTERVAL) * ((float)_progress / 100) + MIN_TIME_INTERVAL);
+                intervalValue = timeInterval;
                 intervalValueLabel.setText(String.valueOf(timeInterval) + " min");
             }
         }
@@ -155,12 +158,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     /** Button callbacks */
     @Override
     public void onClick(View _v) {
-        switch(_v.getId()) {
-            case R.id.button_start: {
+        if (_v.getId() == R.id.button_start) {
+            if (SessionManager.getInstance().setUpNewSession(distance, selectedIntervalType, intervalValue, nrPushUps, nrSitUps)) {
                 Intent i = new Intent(this, ActivityRun.class);
                 startActivity(i);
-            } break;
-            default: Log.e(TAG, "unknown onClick ID encountered ...");
+            } else {
+                // TODO show message, that an active session is running
+            }
         }
     }
 }

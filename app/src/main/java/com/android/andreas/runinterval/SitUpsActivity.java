@@ -88,10 +88,14 @@ public class SitUpsActivity extends ActionBarActivity implements SensorEventList
                 pos = Position.UP;
                 sitUpsRemaining--;
                 tvSitUps.setText(String.valueOf(sitUpsRemaining));
-
                 tvStateLabel.setText("runter");
 
                 pbSitUps.setProgress((sitUpsTotal - sitUpsRemaining));
+
+                if (sitUpsRemaining == 0) {
+                    SessionManager.getInstance().finishedExercise();
+                    finish();
+                }
 
             } else if (pos == Position.UP && _event.values[0] < 4) {
                 pos = Position.DOWN;

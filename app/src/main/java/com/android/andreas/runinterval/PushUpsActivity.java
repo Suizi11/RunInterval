@@ -107,6 +107,11 @@ public class PushUpsActivity extends ActionBarActivity implements SensorEventLis
                 tvStateLabel.setText("Display mit der Nase berühren");
 
                 pbPushUps.setProgress((pushUpsTotal - pushUpsRemaining));
+
+                if (pushUpsRemaining == 0) {
+                    SessionManager.getInstance().finishedExercise();
+                    finish();
+                }
             }
         }
     }
