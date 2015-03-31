@@ -2,13 +2,22 @@ package com.android.andreas.runinterval;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -16,23 +25,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.w3c.dom.Text;
-
-
 public class ActivityRun extends Activity {
 
     private static final String TAG = "RunInterval";
-    private GoogleMap googleMap = null;
-    private LocationManager locManager = null;
-    private Location lastLoc = null;
+    private GoogleMap googleMap;
+    private LocationManager locManager;
+    private Location lastLoc;
     private long startTime = 0;
-
-    private float totalDistance = 0;
-    private float toIntervalDistance = 0;
-    private float intervalDistance = 0;
-
-    // Übergabeparameter
-    private float intervalDistanceFull = 1000;
+    private SessionManager sessionManager;
+    BroadcastReceiver runDataReceiver;
 
     @Override
     public void onCreate(Bundle _savedInstanceState) {
@@ -43,7 +44,7 @@ public class ActivityRun extends Activity {
         LocationListener locListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location _location) {
-                if (lastLoc == null || lastLoc.distanceTo(_location) > 1) { // every meter
+                if (lastLoc == null || lastLoc.distanceTo(_location) > 1) { // update every meter
                     LatLng curPosition = new LatLng(_location.getLatitude(), _location.getLongitude());
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curPosition, 16));
 
@@ -55,18 +56,17 @@ public class ActivityRun extends Activity {
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.locationpointer));
                     googleMap.addMarker(markerOptions);
 
-                    // Update Distances
+                    // Send Distance-Updates to Session Manager
                     if (lastLoc != null) {
-                        totalDistance += lastLoc.distanceTo(_location);
-                        intervalDistance += lastLoc.distanceTo(_location);
-                        toIntervalDistance = intervalDistanceFull - intervalDistance;
+                        sessionManager.ranDistance((int)lastLoc.distanceTo(_location));
                     }
 
+                    // print out the new distances
                     TextView tv = null;
                     tv = (TextView)findViewById(R.id.run_text_distance_data);
-                    tv.setText(String.format("%.2f", totalDistance) + " m");
+                    //v.setText(String.format("%.2f", totalDistance) + " m");
                     tv = (TextView)findViewById(R.id.run_text_tointerval_data);
-                    tv.setText(String.format("%.2f", toIntervalDistance) + " m");
+                    //tv.setText(String.format("%.2f", toIntervalDistance) + " m");
 
 
                     lastLoc = _location; // update last location
@@ -88,27 +88,64 @@ public class ActivityRun extends Activity {
         createMapView();
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
 
-        // Timer
-        final Handler handler = new Handler();
-        Runnable run = new Runnable() {
+        // Broadcast-Receiver
+        runDataReceiver = new BroadcastReceiver() {
             @Override
-            public void run() {
-                long millis = System.currentTimeMillis() - startTime;
-                int seconds = (int) (millis / 1000);
-                int minutes = seconds / 60;
-                seconds     = seconds % 60;
-
-                TextView tv = (TextView)findViewById(R.id.run_text_totaltime_data);
-                if (seconds < 10)
-                    tv.setText(minutes + ":0" + seconds);
-                else
-                    tv.setText(minutes + ":" + seconds);
-
-                handler.postDelayed(this, 1000); // wait 1 second
+            public void onReceive(Context _context, Intent _intent) {
+                Toast.makeText(_context, _intent.toString(), Toast.LENGTH_SHORT).show();
             }
         };
-        startTime = System.currentTimeMillis();
-        run.run(); // start Runnable-Timer
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(runDataReceiver, new IntentFilter("runData"));
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(runDataReceiver);
+        super.onPause();
+    }
+
+    private void checkIntervalFinished() {
+        boolean finished = true;
+        final IntervalType intervalType = IntervalType.DISTANCE;
+        final ExerciseType exerciseType = ExerciseType.SIT_UPS;
+
+        if (finished) {
+            Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(2000);
+
+            Button b = (Button)findViewById(R.id.run_button_start);
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View _v) {
+                    switch (_v.getId()) {
+                        case R.id.run_button_start: {
+                            if (exerciseType == ExerciseType.PUSH_UPS) {
+                                Intent i = new Intent(getApplicationContext(), PushUpsActivity.class);
+                                startActivity(i);
+                            } else if(exerciseType == ExerciseType.SIT_UPS) {
+                                Intent i = new Intent(getApplicationContext(), SitUpsActivity.class);
+                                startActivity(i);
+                            }
+                        } break;
+                        default: Log.e(TAG, "unknown onClick-ID encountered ...");
+                    }
+                }
+            });
+            b.setVisibility(View.VISIBLE);
+
+            TextView tv = (TextView)findViewById(R.id.run_text_intervalnotifier);
+            if (exerciseType == ExerciseType.PUSH_UPS)
+                tv.setText("Mach jetzt x Push-Ups");
+            else if (exerciseType == ExerciseType.SIT_UPS)
+                tv.setText("Mach jetzt Sit-Ups");
+            tv.setVisibility(View.VISIBLE);
+
+        }
     }
 
     private void createMapView(){
@@ -121,6 +158,7 @@ public class ActivityRun extends Activity {
             Log.e(TAG, _e.toString());
         }
     }
+
 
 
 }
