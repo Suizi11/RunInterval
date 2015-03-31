@@ -59,13 +59,6 @@ public class ActivityRun extends Activity {
                         SessionManager.getInstance().ranDistance((int) lastLoc.distanceTo(_location));
                     }
 
-                    // print out the new distances
-                    TextView tv = null;
-                    tv = (TextView)findViewById(R.id.run_text_distance_data);
-                    //v.setText(String.format("%.2f", totalDistance) + " m");
-                    tv = (TextView)findViewById(R.id.run_text_tointerval_data);
-                    //tv.setText(String.format("%.2f", toIntervalDistance) + " m");
-
                     lastLoc = _location; // update last location
                 }
             }
@@ -89,7 +82,75 @@ public class ActivityRun extends Activity {
         runDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context _context, Intent _intent) {
-                Log.i("action", _intent.getAction());
+                if (_intent.getAction() == SessionManager.BROADCAST_ACTION_NORMAL) {
+                    TextView tv = null;
+                    tv = (TextView)findViewById(R.id.run_text_totaltime_data);
+                    int seconds = (int) (_intent.getLongExtra(SessionManager.TOTAL_TIME_KEY, 0) / 1000);
+                    int minutes = seconds / 60;
+                    seconds     = seconds % 60;
+                    if (seconds < 10)
+                        tv.setText(String.valueOf(minutes + ":0" + seconds));
+                    else
+                        tv.setText(String.valueOf(minutes + ":" + seconds));
+
+
+                    tv = (TextView)findViewById(R.id.run_text_distance_data);
+                    int totalDistance = _intent.getIntExtra(SessionManager.TOTAL_DISTANCE_KEY, 0);
+                    tv.setText(String.valueOf(totalDistance) + " m");
+
+
+                    tv = (TextView)findViewById(R.id.run_text_tointerval_data);
+                    if (SessionManager.getInstance().getIntervalType() == IntervalType.DISTANCE) {
+                        int intervalDistance = _intent.getIntExtra(SessionManager.INTERVAL_VALUE_KEY, 0);
+                        tv.setText(String.valueOf(intervalDistance) + " m");
+
+                    } else if (SessionManager.getInstance().getIntervalType() == IntervalType.TIME) {
+                        seconds = (int) (_intent.getLongExtra(SessionManager.INTERVAL_VALUE_KEY, 0) / 1000);
+                        minutes = seconds / 60;
+                        seconds     = seconds % 60;
+                        if (seconds < 10)
+                            tv.setText(String.valueOf(minutes + ":0" + seconds));
+                        else
+                            tv.setText(String.valueOf(minutes + ":" + seconds));
+                    }
+
+                } else if (_intent.getAction() == SessionManager.BROADCAST_ACTION_EXERCISE) {
+                    final ExerciseType exerciseType = (ExerciseType)_intent.getExtras().get(SessionManager.EXERCISE_TYPE_KEY);
+                    int exerciseNumber = _intent.getIntExtra(SessionManager.EXERCISE_VALUE_KEY, 0);
+
+                    Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrator.vibrate(2000);
+
+                    Button b = (Button)findViewById(R.id.run_button_start);
+                    b.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View _v) {
+                            switch (_v.getId()) {
+                                case R.id.run_button_start: {
+                                    if (exerciseType == ExerciseType.PUSH_UPS) {
+                                        Intent i = new Intent(getApplicationContext(), PushUpsActivity.class);
+                                        startActivity(i);
+                                    } else if(exerciseType == ExerciseType.SIT_UPS) {
+                                        Intent i = new Intent(getApplicationContext(), SitUpsActivity.class);
+                                        startActivity(i);
+                                    }
+                                } break;
+                                default: Log.e(TAG, "unknown onClick-ID encountered ...");
+                            }
+                        }
+                    });
+                    b.setVisibility(View.VISIBLE);
+
+                    TextView tv = (TextView)findViewById(R.id.run_text_intervalnotifier);
+                    if (exerciseType == ExerciseType.PUSH_UPS)
+                        tv.setText("Mach jetzt " + String.valueOf(exerciseNumber) + " Push-Ups");
+                    else if (exerciseType == ExerciseType.SIT_UPS)
+                        tv.setText("Mach jetzt " + String.valueOf(exerciseNumber) + " Sit-Ups");
+                    tv.setVisibility(View.VISIBLE);
+
+                }  else if (_intent.getAction() == SessionManager.BROADCAST_ACTION_FINISH) {
+                    SessionManager.getInstance().finishedExercise();
+                }
             }
         };
     }
@@ -100,6 +161,7 @@ public class ActivityRun extends Activity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(SessionManager.BROADCAST_ACTION_NORMAL);
         filter.addAction(SessionManager.BROADCAST_ACTION_EXERCISE);
+        filter.addAction(SessionManager.BROADCAST_ACTION_FINISH);
         LocalBroadcastManager.getInstance(this).registerReceiver(runDataReceiver, filter);
     }
 
@@ -107,45 +169,6 @@ public class ActivityRun extends Activity {
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(runDataReceiver);
         super.onPause();
-    }
-
-    private void checkIntervalFinished() {
-        boolean finished = true;
-        final IntervalType intervalType = IntervalType.DISTANCE;
-        final ExerciseType exerciseType = ExerciseType.SIT_UPS;
-
-        if (finished) {
-            Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(2000);
-
-            Button b = (Button)findViewById(R.id.run_button_start);
-            b.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View _v) {
-                    switch (_v.getId()) {
-                        case R.id.run_button_start: {
-                            if (exerciseType == ExerciseType.PUSH_UPS) {
-                                Intent i = new Intent(getApplicationContext(), PushUpsActivity.class);
-                                startActivity(i);
-                            } else if(exerciseType == ExerciseType.SIT_UPS) {
-                                Intent i = new Intent(getApplicationContext(), SitUpsActivity.class);
-                                startActivity(i);
-                            }
-                        } break;
-                        default: Log.e(TAG, "unknown onClick-ID encountered ...");
-                    }
-                }
-            });
-            b.setVisibility(View.VISIBLE);
-
-            TextView tv = (TextView)findViewById(R.id.run_text_intervalnotifier);
-            if (exerciseType == ExerciseType.PUSH_UPS)
-                tv.setText("Mach jetzt x Push-Ups");
-            else if (exerciseType == ExerciseType.SIT_UPS)
-                tv.setText("Mach jetzt Sit-Ups");
-            tv.setVisibility(View.VISIBLE);
-
-        }
     }
 
     private void createMapView(){
