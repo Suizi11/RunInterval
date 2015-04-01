@@ -44,7 +44,7 @@ public class SitUpsActivity extends ActionBarActivity implements SensorEventList
         tvSitUps = (TextView) findViewById(R.id.number_sit_ups);
         pbSitUps = (ProgressBar) findViewById(R.id.progress_sit_ups);
 
-        sitUpsTotal = 30;
+        sitUpsTotal = SessionManager.getInstance().getSitupsNumber();
         sitUpsRemaining = sitUpsTotal;
         tvSitUps.setText(String.valueOf(sitUpsRemaining));
         pbSitUps.setMax(sitUpsTotal);

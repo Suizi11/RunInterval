@@ -46,7 +46,7 @@ public class PushUpsActivity extends ActionBarActivity implements SensorEventLis
         tvPushUps = (TextView) findViewById(R.id.number_push_ups);
         pbPushUps = (ProgressBar) findViewById(R.id.progress_push_ups);
 
-        pushUpsTotal = 30;
+        pushUpsTotal = SessionManager.getInstance().getPushupsNumber();
         pushUpsRemaining = pushUpsTotal;
         tvPushUps.setText(String.valueOf(pushUpsRemaining));
         pbPushUps.setMax(pushUpsTotal);

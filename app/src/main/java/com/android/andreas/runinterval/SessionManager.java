@@ -120,6 +120,10 @@ public class SessionManager extends BroadcastReceiver {
         return intervalType;
     }
 
+    public int getPushupsNumber() { return nrPushUps; }
+
+    public int getSitupsNumber() { return nrSitUps; }
+
     public void ranDistance(int _leftDistance) {
         if (isSessionActive) {
             totalDistance -= _leftDistance;

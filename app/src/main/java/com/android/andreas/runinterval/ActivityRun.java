@@ -163,6 +163,11 @@ public class ActivityRun extends Activity {
         filter.addAction(SessionManager.BROADCAST_ACTION_EXERCISE);
         filter.addAction(SessionManager.BROADCAST_ACTION_FINISH);
         LocalBroadcastManager.getInstance(this).registerReceiver(runDataReceiver, filter);
+
+        Button b = (Button)findViewById(R.id.run_button_start);
+        b.setVisibility(View.GONE);
+        TextView tv = (TextView)findViewById(R.id.run_text_intervalnotifier);
+        tv.setVisibility(View.GONE);
     }
 
     @Override
