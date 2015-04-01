@@ -145,7 +145,7 @@ public class SessionManager extends BroadcastReceiver {
         if (intervalType == IntervalType.DISTANCE) {
             metersLeft = intervalValue;
         } else if (intervalType == IntervalType.TIME) {
-            timeLeft = intervalValue * 60 * 100;
+            timeLeft = intervalValue * 60 * 1000;
         }
     }
 
