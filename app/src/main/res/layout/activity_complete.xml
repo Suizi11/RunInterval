@@ -1,0 +1,123 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.android.andreas.runinterval.ActivityRun">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:focusable="false"
+        android:paddingBottom="8dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Workout abgeschlossen"
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="32dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gesamtzeit:"
+                android:id="@+id/run_text_totaltime_text"
+                android:layout_marginLeft="32dp"
+                android:textSize="18dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="38:52"
+                android:id="@+id/complete_totaltime"
+                android:textSize="22dp"
+                android:layout_marginRight="32dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gesamtstrecke:"
+                android:id="@+id/run_text_distance_text"
+                android:layout_marginLeft="32dp"
+                android:textSize="18dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/complete_totaldistance"
+                android:textSize="22dp"
+                android:layout_marginRight="32dp"
+                android:text="7.0 km" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Push-Up&apos;s:"
+                android:id="@+id/run_text_tointerval_text"
+                android:layout_marginLeft="32dp"
+                android:textSize="18dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="70"
+                android:id="@+id/complete_pushups"
+                android:textSize="22dp"
+                android:layout_marginRight="32dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sit-Ups&apos;s:"
+                android:id="@+id/textView2"
+                android:layout_marginLeft="32dp"
+                android:textSize="18dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="105"
+                android:id="@+id/complete_situps"
+                android:textSize="22dp"
+                android:layout_marginRight="32dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

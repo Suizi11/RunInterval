@@ -150,6 +150,8 @@ public class ActivityRun extends Activity {
 
                 }  else if (_intent.getAction() == SessionManager.BROADCAST_ACTION_FINISH) {
                     SessionManager.getInstance().finishedExercise();
+                    Intent i = new Intent(getApplicationContext(), ActivityComplete.class);
+                    startActivity(i);
                 }
             }
         };
