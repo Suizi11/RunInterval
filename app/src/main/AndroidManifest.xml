@@ -45,6 +45,11 @@
             android:label="@string/title_activity_sit_ups"
             android:screenOrientation="landscape" >
         </activity>
+        <activity
+            android:name=".ActivityComplete"
+            android:label="@string/title_activity_complete"
+            android:screenOrientation="portrait" >
+        </activity>
 
     </application>
 

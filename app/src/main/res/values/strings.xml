@@ -13,4 +13,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_activity_test">ActivityTest</string>
     <string name="title_activity_map_test">MapTestActivity</string>
+
+    <string name="title_activity_complete">ActivityComplete</string>
 </resources>
